@@ -6,6 +6,7 @@ import com.rtvnewsnetwork.file.fileupload.model.VideoAndThumbnailResponse;
 import com.rtvnewsnetwork.file.fileupload.service.FileService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -16,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @Controller
-@RequestMapping("/api/files")
+@RequestMapping("/api/file")
 public class FileController {
 
     private final FileService awsS3Service;
@@ -30,12 +31,14 @@ public class FileController {
     @PostMapping
     public ResponseEntity<UploadedFile> handleFileUpload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam("type") S3Path path
+            @RequestParam(value="type" ,defaultValue = "MEDIA_IMAGES") S3Path path
     ) throws IOException {
         Long size = file.getSize();
 
         UploadedFile uploadedFile = awsS3Service.upload(file, path, bucket, size);
-        return new ResponseEntity<>(uploadedFile, HttpStatus.OK);
+         return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON) // ensures correct content type
+                .body(uploadedFile);
     }
 
     @PostMapping("/createThumbnail")
