@@ -36,12 +36,12 @@ public class FileController {
     @PostMapping
     public ResponseEntity<UploadedFile> handleFileUpload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam(value="type" ,defaultValue = "MEDIA_IMAGES") S3Path path
+            @RequestParam(value = "type", defaultValue = "MEDIA_IMAGES") S3Path path
     ) throws IOException {
         Long size = file.getSize();
 
         UploadedFile uploadedFile = awsS3Service.upload(file, path, bucket, size);
-         return ResponseEntity.ok()
+        return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON) // ensures correct content type
                 .body(uploadedFile);
     }
@@ -57,54 +57,54 @@ public class FileController {
         return new ResponseEntity<>(thumbnail, HttpStatus.OK);
     }
 
-//    @PostMapping("/videoAndThumbnailUpload")
-//    public ResponseEntity<VideoAndThumbnailResponse> uploadVideoAndThumbnail(
-//            @RequestParam("file") MultipartFile file,
-//            @RequestParam(value = "videoPath", defaultValue = "MEDIA_VIDEOS") S3Path videoPath,
-//            @RequestParam(value = "thumbnailPath", defaultValue = "MEDIA_IMAGES") S3Path thumbnailPath
-//    ) throws Exception {
-//        Long size = file.getSize();
-//
-//        VideoAndThumbnailResponse response = awsS3Service.videoAndthumbnailUpload(file, videoPath, thumbnailPath, bucket, size);
-//        return new ResponseEntity<>(response, HttpStatus.OK);
-//    }
-
-
-
     @PostMapping("/videoAndThumbnailUpload")
-    public ResponseEntity<VideoAndThumbnailResponse> upload(
-            @RequestParam(value = "file", required = false) MultipartFile file,
-            @RequestParam(value = "embedCode", required = false) String embedCode,
-            @RequestParam(value = "platform", required = false) String platform,
-            @RequestParam(value = "videoPath", required = false) S3Path videoPath,
-            @RequestParam(value = "thumbnailPath", required = false) S3Path thumbnailPath
+    public ResponseEntity<VideoAndThumbnailResponse> uploadVideoAndThumbnail(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value = "videoPath", defaultValue = "MEDIA_VIDEOS") S3Path videoPath,
+            @RequestParam(value = "thumbnailPath", defaultValue = "MEDIA_IMAGES") S3Path thumbnailPath
     ) throws Exception {
+        Long size = file.getSize();
+
+        VideoAndThumbnailResponse response = awsS3Service.videoAndthumbnailUpload(file, videoPath, thumbnailPath, bucket, size);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+}
+
+//
+//    @PostMapping("/videoAndThumbnailUpload")
+//    public ResponseEntity<VideoAndThumbnailResponse> upload(
+//            @RequestParam(value = "file", required = false) MultipartFile file,
+//            @RequestParam(value = "embedCode", required = false) String embedCode,
+//            @RequestParam(value = "platform", required = false) String platform,
+//            @RequestParam(value = "videoPath", required = false) S3Path videoPath,
+//            @RequestParam(value = "thumbnailPath", required = false) S3Path thumbnailPath
+//    ) throws Exception {
 
         // Case: Facebook / Twitter embed
-        if (embedCode != null && platform != null) {
-
-            String thumbnail = null;
-
-            if (platform.equalsIgnoreCase("facebook")) {
-                thumbnail = thumbnailExtractorService.extractFacebookThumbnail(embedCode);
-            } else if (platform.equalsIgnoreCase("twitter")) {
-                thumbnail = thumbnailExtractorService.extractTwitterThumbnail(embedCode);
-            }
-
-            return ResponseEntity.ok(
-                    new VideoAndThumbnailResponse(
-                            UploadedFile.fromExternalUrl(embedCode),
-                            UploadedFile.fromExternalUrl(thumbnail)
-                    )
-            );
-        }
-
-        // Case: Normal video upload (mp4)
-        VideoAndThumbnailResponse response =
-                awsS3Service.videoAndthumbnailUpload(file, videoPath, thumbnailPath, "your-bucket-name", file.getSize());
-
-        return ResponseEntity.ok(response);
-    }
-
-
-}
+//        if (embedCode != null && platform != null) {
+//
+//            String thumbnail = null;
+//
+//            if (platform.equalsIgnoreCase("facebook")) {
+//                thumbnail = thumbnailExtractorService.extractFacebookThumbnail(embedCode);
+//            } else if (platform.equalsIgnoreCase("twitter")) {
+//                thumbnail = thumbnailExtractorService.extractTwitterThumbnail(embedCode);
+//            }
+//
+//            return ResponseEntity.ok(
+//                    new VideoAndThumbnailResponse(
+//                            UploadedFile.fromExternalUrl(embedCode),
+//                            UploadedFile.fromExternalUrl(thumbnail)
+//                    )
+//            );
+//        }
+//
+//        // Case: Normal video upload (mp4)
+//        VideoAndThumbnailResponse response =
+//                awsS3Service.videoAndthumbnailUpload(file, videoPath, thumbnailPath, "your-bucket-name", file.getSize());
+//
+//        return ResponseEntity.ok(response);
+//    }
+//
+//
+//}
