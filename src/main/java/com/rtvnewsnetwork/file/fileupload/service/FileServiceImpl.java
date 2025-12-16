@@ -54,13 +54,36 @@ public class FileServiceImpl implements FileService {
         return this.saveEntry(path);
     }
 
+//    @Override
+//    public UploadedFile upload(MultipartFile multipartFile, S3Path path, String bucket, Long size) throws IOException {
+//        InputStream inputStream =
+//                (multipartFile.getSize() > maxBannerSizeBytes) ? ImageCompressor.compress(
+//                        multipartFile.getInputStream()) : multipartFile.getInputStream();
+//        return upload(inputStream, getFullPath(path, multipartFile.getOriginalFilename()), bucket,size);
+//    }
+
+    /// / Multiple FIle Upload////
     @Override
-    public UploadedFile upload(MultipartFile multipartFile, S3Path path, String bucket, Long size) throws IOException {
+    public UploadedFile upload(
+            MultipartFile multipartFile,
+            S3Path path,
+            String bucket,
+            Long size
+    ) throws IOException {
+
         InputStream inputStream =
-                (multipartFile.getSize() > maxBannerSizeBytes) ? ImageCompressor.compress(
-                        multipartFile.getInputStream()) : multipartFile.getInputStream();
-        return upload(inputStream, getFullPath(path, multipartFile.getOriginalFilename()), bucket,size);
+                (multipartFile.getSize() > maxBannerSizeBytes)
+                        ? ImageCompressor.compress(multipartFile.getInputStream())
+                        : multipartFile.getInputStream();
+
+        return upload(
+                inputStream,
+                getFullPath(path, multipartFile.getOriginalFilename()),
+                bucket,
+                size
+        );
     }
+
 
 //    @Override
 //    public UploadedFile upload(InputStream inputStream, S3Path path, String fileName, String bucket)
