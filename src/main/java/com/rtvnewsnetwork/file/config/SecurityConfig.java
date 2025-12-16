@@ -43,7 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/actuator/**", "/auth-docs").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/file/uploadVideoOrEmbed").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/api/file/multiple").permitAll()
+//                        .requestMatchers(HttpMethod.POST, "/api/file/multiple").permitAll()
                         .requestMatchers(HttpMethod.GET, "/**").permitAll()
                         .anyRequest().authenticated()
                 )
