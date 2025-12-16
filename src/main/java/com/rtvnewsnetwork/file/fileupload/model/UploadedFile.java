@@ -43,6 +43,16 @@ public class UploadedFile {
         this.createdOn = createdOn;
     }
 
+    // Create a virtual UploadedFile from an external URL (Facebook / Twitter)
+    public static UploadedFile fromExternalUrl(String url) {
+        UploadedFile file = new UploadedFile();
+        file.id = null;
+        file.serializableRelativePath = new RelativePath(url);
+        file.relativePath = url;
+        file.createdOn = Instant.now();
+        return file;
+    }
+
     public String getId() {
         return id;
     }
@@ -136,5 +146,7 @@ public class UploadedFile {
             this.relativePath = new RelativePath(
                     uploadedFile.getSerializableRelativePath().getPath());
         }
+
+
     }
 }

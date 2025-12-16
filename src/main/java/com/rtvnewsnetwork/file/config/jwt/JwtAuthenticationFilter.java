@@ -81,9 +81,22 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         response.getWriter().flush();
     }
 
+//    @Override
+//    protected boolean shouldNotFilter(HttpServletRequest request) {
+//        String path = request.getServletPath();
+//        return !path.startsWith("/api/");
+//    }
+
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
         String path = request.getServletPath();
+
+        // Skip auth for file upload endpoints
+        if (path.startsWith("/api/file/videoAndThumbnailUpload")
+                || path.startsWith("/api/file/uploadVideoOrEmbed")) {
+            return true;
+        }
+
         return !path.startsWith("/api/");
     }
 }
