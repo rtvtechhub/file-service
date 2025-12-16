@@ -18,6 +18,7 @@ public interface FileService {
     UploadedFile upload(InputStream inputStream, String path, ObjectMetadata metadata, String bucket);
 
     UploadedFile upload(MultipartFile multipartFile, S3Path path, String bucket, Long size) throws IOException;
+    UploadedFile uploadMultiple(MultipartFile multipartFile, S3Path path, String bucket, Long size) throws IOException;
 
     UploadedFile uploadWithExactName(InputStream in, S3Path s3Path, String fileName,
                                      ObjectMetadata metadata, String bucket)

@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/api/file")
@@ -36,15 +38,36 @@ public class FileController {
     @PostMapping
     public ResponseEntity<UploadedFile> handleFileUpload(
             @RequestParam("file") MultipartFile file,
-            @RequestParam(value = "type", defaultValue = "MEDIA_IMAGES") S3Path path
+            @RequestParam(value="type" ,defaultValue = "MEDIA_IMAGES") S3Path path
     ) throws IOException {
         Long size = file.getSize();
 
         UploadedFile uploadedFile = awsS3Service.upload(file, path, bucket, size);
-        return ResponseEntity.ok()
+         return ResponseEntity.ok()
                 .contentType(MediaType.APPLICATION_JSON) // ensures correct content type
                 .body(uploadedFile);
     }
+
+    @PostMapping("/multiple")
+    public ResponseEntity<List<UploadedFile>> handleFileUpload(
+            @RequestParam("files") MultipartFile[] files,
+            @RequestParam(value="type", defaultValue="MEDIA_IMAGES") S3Path path
+    ) throws IOException {
+
+        List<UploadedFile> uploadedFiles = new ArrayList<>();
+
+        for (MultipartFile file : files) {
+            Long size = file.getSize();
+            UploadedFile uploadedFile =
+                    awsS3Service.uploadMultiple(file, path, bucket, size);
+            uploadedFiles.add(uploadedFile);
+        }
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(uploadedFiles);
+    }
+
 
     @PostMapping("/createThumbnail")
     public ResponseEntity<UploadedFile> createThumbnail(
