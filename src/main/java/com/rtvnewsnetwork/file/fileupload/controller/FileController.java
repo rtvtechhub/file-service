@@ -35,20 +35,20 @@ public class FileController {
         this.awsS3Service = awsS3Service;
     }
 
-//    @PostMapping
-//    public ResponseEntity<UploadedFile> handleFileUpload(
-//            @RequestParam("file") MultipartFile file,
-//            @RequestParam(value="type" ,defaultValue = "MEDIA_IMAGES") S3Path path
-//    ) throws IOException {
-//        Long size = file.getSize();
-//
-//        UploadedFile uploadedFile = awsS3Service.upload(file, path, bucket, size);
-//         return ResponseEntity.ok()
-//                .contentType(MediaType.APPLICATION_JSON) // ensures correct content type
-//                .body(uploadedFile);
-//    }
-
     @PostMapping
+    public ResponseEntity<UploadedFile> handleFileUpload(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam(value="type" ,defaultValue = "MEDIA_IMAGES") S3Path path
+    ) throws IOException {
+        Long size = file.getSize();
+
+        UploadedFile uploadedFile = awsS3Service.upload(file, path, bucket, size);
+         return ResponseEntity.ok()
+                .contentType(MediaType.APPLICATION_JSON) // ensures correct content type
+                .body(uploadedFile);
+    }
+
+    @PostMapping("/multiple")
     public ResponseEntity<List<UploadedFile>> handleFileUpload(
             @RequestParam("files") MultipartFile[] files,
             @RequestParam(value="type", defaultValue="MEDIA_IMAGES") S3Path path
@@ -59,7 +59,7 @@ public class FileController {
         for (MultipartFile file : files) {
             Long size = file.getSize();
             UploadedFile uploadedFile =
-                    awsS3Service.upload(file, path, bucket, size);
+                    awsS3Service.uploadMultiple(file, path, bucket, size);
             uploadedFiles.add(uploadedFile);
         }
 

@@ -92,7 +92,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
 
         // Skip auth for file upload endpoints
-        if (path.startsWith("/api/file/videoAndThumbnailUpload")
+        if (path.startsWith("/api/file/multiple")||path.startsWith("/api/file/videoAndThumbnailUpload")
                 || path.startsWith("/api/file/uploadVideoOrEmbed")) {
             return true;
         }
